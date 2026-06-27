@@ -61,10 +61,12 @@ for toolchain in $1; do
     echo "build succeeded in $((DIFF / 60))m, $((DIFF % 60))s" > "${toolchain}-${TIME}.log.info"
     echo "ak3 zip file: <code>${zip_name}</code>" >> "${toolchain}-${TIME}.log.info"
     echo "compiler: $(cat ${toolchain}.info)" >> "${toolchain}-${TIME}.log.info"
+    rm -f "${maindir}/.ksu_ver"
   else
     BUILD_END=$(date +"%s")
     DIFF=$((BUILD_END - BUILD_START))
     echo "build failed in $((DIFF / 60))m, $((DIFF % 60))s" > "${toolchain}-${TIME}.log.info"
     echo "compiler: $(cat ${toolchain}.info)" >> "${toolchain}-${TIME}.log.info"
+    rm -f "${maindir}/.ksu_ver"
   fi
 done
