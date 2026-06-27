@@ -20,11 +20,11 @@ on: # [push]
       KREPO:
         description: 'kernel repo'
         required: true
-        default: 'https://github.com/TelegramAt25/niigo_kernel_xiaomi_blossom'
+        default: 'https://github.com/dre698/Mayuri-kernel'
       KBRANCH:
         description: 'kernel branch'
         required: true
-        default: 'yoka_rb3'
+        default: 'main'
       NOTES:
         description: 'notes to print out'
         required: false
@@ -66,7 +66,7 @@ env:
   SUFFIX: ${{ github.event.inputs.SUFFIX }}
   zipper_repo: ${{ github.event.inputs.ZREPO }}
   zipper_branch: ${{ github.event.inputs.ZBRANCH }}
-  TZ: Asia/Ho_Chi_Minh
+  TZ: Asia/Jakarta
 
 jobs:
   build:
@@ -171,4 +171,4 @@ jobs:
             WORKFLOW_END=$(date +"%s")
             WDIFF=$((WORKFLOW_END - WORKFLOW_START))
             bash tg_utils.sh msg "gh $RUN_NUM: workflow ended in $((WDIFF / 60))m, $((WDIFF % 60))s"
-
+            
