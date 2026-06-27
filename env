@@ -10,7 +10,7 @@ export outside="${maindir}/.."
 export ARCH="arm64"
 export SUBARCH="arm64"
 export KBUILD_BUILD_USER="dre698"
-export KBUILD_BUILD_HOST="Mayuri"
+export KBUILD_BUILD_HOST="Telegram"
 
 export defconfig="blossom_defconfig"
 
