@@ -11,6 +11,8 @@ git add . && git commit -am "drivers: KernelSU"
 KSU_git_ver=$(cd KernelSU && git rev-list --count HEAD)
 KSU_ver=$(($KSU_git_ver + 30000))
 
+export ZIP_PREFIX="${kernel_name}-ks${KSU_ver}"
+
 patchesdir="$outside/ksu/patches/$(echo $kernel_ver | cut -d. -f1,2)"
 if [[ -d "$patchesdir" ]]; then
   for patch_file in "$patchesdir"/*.patch ; do
