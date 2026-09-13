@@ -14,7 +14,7 @@ KSU_ver=$(($KSU_git_ver + 33300))
 patchesdir="$outside/ksu/patches/$(echo $kernel_ver | cut -d. -f1,2)"
 if [[ -d "$patchesdir" ]]; then
   for patch_file in "$patchesdir"/*.patch ; do
-    git am "$patch_file"
+    git am "$patch_file" || { echo "WARNING: $patch_file failed to apply, skipping (see log above)"; git am --abort; }
   done
   echo 'CONFIG_KALLSYMS_ALL=y' >> "${defconfig_file}"
 else
