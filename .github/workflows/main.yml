@@ -20,11 +20,11 @@ on: # [push]
       KREPO:
         description: 'kernel repo'
         required: true
-        default: 'https://github.com/dre698/Mayuri-kernel'
+        default: 'https://github.com/dre698/sashimi_kernel_xiaomi_blossom'
       KBRANCH:
         description: 'kernel branch'
         required: true
-        default: 'main'
+        default: 'sashimi'
       NOTES:
         description: 'notes to print out'
         required: false
