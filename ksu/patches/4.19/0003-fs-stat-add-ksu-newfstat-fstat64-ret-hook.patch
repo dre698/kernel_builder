@@ -1,0 +1,73 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: dre698 <dre698@users.noreply.github.com>
+Date: Sun, 13 Sep 2026 00:00:00 +0800
+Subject: [PATCH] fs/stat: add ksu_handle_newfstat_ret / fstat64_ret hooks
+ (NadekoSU manual hook)
+
+NadekoSU's manual_hook_check.mk requires the fstat return hooks in
+addition to the existing newfstatat/fstatat64 pre-hooks, otherwise
+the build stops with:
+
+  "You lost ksu_handle_newfstat_ret hook in your kernel"
+
+This adds the missing hooks per the NadekoSU manual-integrate guide:
+https://dre698.github.io/NadekoSU/guide/manual-integrate.html#stat-hook
+
+* fs/stat: newfstat: ksu_handle_newfstat_ret hook (required)
+* fs/stat: fstat64: ksu_handle_fstat64_ret hook (32-bit su, optional)
+
+Depends on: "KernelSU: integrate scope-minimized manual hooks v1.8"
+(applies on top of it).
+
+Signed-off-by: dre698 <dre698@users.noreply.github.com>
+
+diff --git a/fs/stat.c b/fs/stat.c
+index fb2eddb..d38a1c9 100644
+--- a/fs/stat.c
++++ b/fs/stat.c
+@@ -376,6 +376,10 @@ SYSCALL_DEFINE4(newfstatat, int, dfd, const char __user *, filename,
+ }
+ #endif
+ 
++#ifdef CONFIG_KSU
++extern void ksu_handle_newfstat_ret(unsigned int *fd, struct stat __user **statbuf_ptr);
++#endif
++
+ SYSCALL_DEFINE2(newfstat, unsigned int, fd, struct stat __user *, statbuf)
+ {
+ 	struct kstat stat;
+@@ -384,6 +388,10 @@ SYSCALL_DEFINE2(newfstat, unsigned int, fd, struct stat __user *, statbuf)
+ 	if (!error)
+ 		error = cp_new_stat(&stat, statbuf);
+ 
++#ifdef CONFIG_KSU
++	ksu_handle_newfstat_ret(&fd, &statbuf);
++#endif
++
+ 	return error;
+ }
+ 
+@@ -502,6 +510,10 @@ SYSCALL_DEFINE2(lstat64, const char __user *, filename,
+ 	return error;
+ }
+ 
++#ifdef CONFIG_KSU
++extern void ksu_handle_fstat64_ret(unsigned long *fd, struct stat64 __user **statbuf_ptr); // optional
++#endif
++
+ SYSCALL_DEFINE2(fstat64, unsigned long, fd, struct stat64 __user *, statbuf)
+ {
+ 	struct kstat stat;
+@@ -510,6 +522,10 @@ SYSCALL_DEFINE2(fstat64, unsigned long, fd, struct stat64 __user *, statbuf)
+ 	if (!error)
+ 		error = cp_new_stat64(&stat, statbuf);
+ 
++#ifdef CONFIG_KSU
++	ksu_handle_fstat64_ret(&fd, &statbuf);
++#endif
++
+ 	return error;
+ }
+ 
+-- 
+2.43.0
