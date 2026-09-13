@@ -1,19 +1,33 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: backslashxx <118538522+backslashxx@users.noreply.github.com>
-Date: Sun, 19 Oct 2025 21:52:12 +0800
+From: dre698 <dre698@users.noreply.github.com>
+Date: Sun, 13 Sep 2026 00:00:00 +0800
 Subject: [PATCH] KernelSU, selinux/avc: add slow_avc_audit hook v2
+ (sashimi context fix)
+
+The upstream backslashxx patch assumes avc_audit_post_callback() ends
+without an `if (ad->selinux_audit_data->denied) { ... }` wrapper around
+the last audit_log_format() call. sashimi's avc.c has that wrapper
+(extra closing brace), so the original patch's context never matches
+and `git am` fails with:
+
+  error: patch failed: security/selinux/avc.c:764
+  error: security/selinux/avc.c: patch does not apply
+
+This is the same hook, re-diffed against sashimi's actual avc.c so it
+applies cleanly.
 
 since kprobes is broken on this kernel, manual hook is needed for avc log spoofing
 
 Signed-off-by: backslashxx <118538522+backslashxx@users.noreply.github.com>
 Signed-off-by: fukiame <fukiame@proton.me>
+Signed-off-by: dre698 <dre698@users.noreply.github.com>
 
 diff --git a/security/selinux/avc.c b/security/selinux/avc.c
-index 583c6c9597d496c8f1b087ba5fdd88349ea2656d..2b156eb77efb1baca2a2cb8de5b14d7533c97dfd 100644
+index 0ca0223..c5f51e6 100644
 --- a/security/selinux/avc.c
 +++ b/security/selinux/avc.c
-@@ -764,6 +764,10 @@ static void avc_audit_post_callback(struct audit_buffer *ab, void *a)
- 			 ad->selinux_audit_data->result ? 0 : 1);
+@@ -768,6 +768,10 @@ static void avc_audit_post_callback(struct audit_buffer *ab, void *a)
+ 	}
  }
  
 +#ifdef CONFIG_KSU
@@ -23,7 +37,7 @@ index 583c6c9597d496c8f1b087ba5fdd88349ea2656d..2b156eb77efb1baca2a2cb8de5b14d75
  /* This is the slow part of avc audit with big stack footprint */
  noinline int slow_avc_audit(struct selinux_state *state,
  			    u32 ssid, u32 tsid, u16 tclass,
-@@ -776,6 +780,11 @@ noinline int slow_avc_audit(struct selinux_state *state,
+@@ -783,6 +787,12 @@ noinline int slow_avc_audit(struct selinux_state *state,
  	if (!denied)
  		return 0;
  
@@ -32,6 +46,9 @@ index 583c6c9597d496c8f1b087ba5fdd88349ea2656d..2b156eb77efb1baca2a2cb8de5b14d75
 +	if (!tclass)
 +		return 0;
 +#endif
++
  	if (!a) {
  		a = &stack_data;
  		a->type = LSM_AUDIT_DATA_NONE;
+-- 
+2.43.0

@@ -1,0 +1,45 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: dre698 <dre698@users.noreply.github.com>
+Date: Sun, 13 Sep 2026 00:00:00 +0800
+Subject: [PATCH] security/selinux: export write_op and
+ sel_handle_status_ops (NadekoSU static symbol export)
+
+NadekoSU's static_export_check.mk requires these two symbols to be
+non-static so they resolve at runtime without depending on
+CONFIG_KALLSYMS_ALL (which the builder tries to force via defconfig,
+but doesn't reliably take effect on every checkout). Removing `static`
+here works regardless of the KALLSYMS_ALL state, per:
+https://dre698.github.io/NadekoSU/guide/manual-integrate.html#static-symbol-export
+
+Without this, drivers/kernelsu build stops with:
+
+  -- You disabled CONFIG_KALLSYMS_ALL and haven't export
+     sel_handle_status_ops in your kernel's selinuxfs.c file
+  *** You should integrate NadekoSU in your kernel. .  Stop.
+
+Signed-off-by: dre698 <dre698@users.noreply.github.com>
+
+diff --git a/security/selinux/selinuxfs.c b/security/selinux/selinuxfs.c
+index d93fd1a..d48e633 100644
+--- a/security/selinux/selinuxfs.c
++++ b/security/selinux/selinuxfs.c
+@@ -265,7 +265,7 @@ static int sel_mmap_handle_status(struct file *filp,
+ 			       size, vma->vm_page_prot);
+ }
+ 
+-static const struct file_operations sel_handle_status_ops = {
++const struct file_operations sel_handle_status_ops = {
+ 	.open		= sel_open_handle_status,
+ 	.read		= sel_read_handle_status,
+ 	.mmap		= sel_mmap_handle_status,
+@@ -777,7 +777,7 @@ static ssize_t sel_write_relabel(struct file *file, char *buf, size_t size);
+ static ssize_t sel_write_user(struct file *file, char *buf, size_t size);
+ static ssize_t sel_write_member(struct file *file, char *buf, size_t size);
+ 
+-static ssize_t (*const write_op[])(struct file *, char *, size_t) = {
++ssize_t (*const write_op[])(struct file *, char *, size_t) = {
+ 	[SEL_ACCESS] = sel_write_access,
+ 	[SEL_CREATE] = sel_write_create,
+ 	[SEL_RELABEL] = sel_write_relabel,
+-- 
+2.43.0
