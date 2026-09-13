@@ -17,6 +17,7 @@ if [[ -d "$patchesdir" ]]; then
     git am "$patch_file" || { echo "WARNING: $patch_file failed to apply, skipping (see log above)"; git am --abort; }
   done
   echo 'CONFIG_KALLSYMS_ALL=y' >> "${defconfig_file}"
+  echo 'CONFIG_KSU_MANUAL_HOOK=y' >> "${defconfig_file}"
 else
   echo "patching ksu failed, the kernel version you want to patch doesnt have patches here yet"
   exit 1
