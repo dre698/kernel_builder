@@ -48,6 +48,8 @@ fi
 
 if [[ ! -z "$2" ]]; then rm -rf out ../zipper; fi
 
+rm -f zip_suffix
+
 source ../$1env || { bash tg_utils.sh msg "$RUN_ID: incorrect envset: nonexistent env, bailing" && exit 127 ; }
 
 bash ../tg_utils.sh msg "kernel name: ${kernel_name}%nlkernel ver: ${kernel_ver}%nlkernel head commit: ${kernel_head}%nldefconfig: ${defconfig}"
