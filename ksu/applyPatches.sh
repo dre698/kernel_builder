@@ -22,10 +22,3 @@ else
   echo "patching ksu failed, the kernel version you want to patch doesnt have patches here yet"
   exit 1
 fi
-
-sed -i "s/\(CONFIG_LOCALVERSION=\)\(.*\)/\1\"-${kernel_name}-ks${KSU_ver}\"/" "${defconfig_file}"
-
-echo "$(grep 'CONFIG_LOCALVERSION=' ${defconfig_file})"
-
-echo -e " \nincludes NadekoSU, ver ${KSU_ver}" >> banner_append
-
