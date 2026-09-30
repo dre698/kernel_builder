@@ -21,4 +21,6 @@ if [[ -d "$patchesdir" ]]; then
 else
   echo "patching ksu failed, the kernel version you want to patch doesnt have patches here yet"
   exit 1
-fi0
+fi
+
+echo "-ks${KSU_ver}" > "${maindir}/zip_suffix"
