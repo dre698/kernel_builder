@@ -20,11 +20,11 @@ on: # [push]
       KREPO:
         description: 'kernel repo'
         required: true
-        default: 'https://github.com/dre698/sashimi_kernel_xiaomi_blossom'
+        default: 'https://github.com/dre698/Mayuri-kernel'
       KBRANCH:
         description: 'kernel branch'
         required: true
-        default: 'sashimi'
+        default: 'main'
       NOTES:
         description: 'notes to print out'
         required: false
@@ -52,7 +52,7 @@ on: # [push]
       TG_THREAD_ID:
         description: 'telegram forum topic (message_thread_id) to post into, blank = General'
         required: false
-        default: '6'
+        default: '5'
       CONTAINER:
         description: 'if you know you know'
         required: true
