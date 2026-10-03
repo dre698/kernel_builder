@@ -12,13 +12,13 @@ export SUBARCH="arm64"
 export KBUILD_BUILD_USER="Telegram"
 export KBUILD_BUILD_HOST="dre698"
 
-export defconfig="dandelion_defconfig"
+export defconfig="blossom_defconfig"
 
 if [[ -z "$zipper_repo" ]]; then
   export zipper_repo="https://github.com/dre698/AnyKernel3"
 fi
 if [[ -z "$zipper_branch" ]]; then
-  export zipper_branch=mikan
+  export zipper_branch=sashimi
 fi
 
 export out_image="${maindir}/out/arch/${ARCH}/boot/Image.gz"
