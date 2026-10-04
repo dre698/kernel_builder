@@ -16,7 +16,7 @@ on: # [push]
       COMPILER:
         description: 'compilers used'
         required: true
-        default: 'AOSP-Clang-11'
+        default: 'AOSP-Clang-11-GNU-ld'
       KREPO:
         description: 'kernel repo'
         required: true
